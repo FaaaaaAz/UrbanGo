@@ -10,31 +10,31 @@ const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const ONBOARDING_DATA = [
   {
     id: 1,
-    icon: '🚗',
-    title: 'Comparte tu Ruta',
-    description: '¿Vas al trabajo todos los días? Convierte tu auto en una fuente de ingresos compartiendo tu ruta con otros pasajeros.',
+    icon: 'time-outline',
+    title: '¿Sin transporte en horas pico?',
+    description: 'En muchas zonas de la ciudad, encontrar trufi o minibús puede ser complicado cuando más lo necesitas.',
     color: COLORS.primary,
   },
   {
     id: 2,
-    icon: '💰',
-    title: 'Viaja Económico',
-    description: 'Viaja por solo 4-6 Bs, más económico que un taxi (15+ Bs) y más cómodo que el transporte público (2.5 Bs).',
-    color: '#FF6B00',
+    icon: 'car-outline',
+    title: 'Viaja en rutas que ya existen',
+    description: 'UrbanGo conecta pasajeros con conductores que ya tienen una ruta diaria hacia su trabajo.',
+    color: COLORS.primary,
   },
   {
     id: 3,
-    icon: '🌍',
-    title: 'Reduce tu Huella',
-    description: 'Ayuda al medio ambiente compartiendo viajes. Menos autos en las calles significa menos contaminación y tráfico.',
-    color: '#10b981',
+    icon: 'speedometer-outline',
+    title: 'Más rápido y más económico',
+    description: 'Paga menos que un taxi y llega más rápido que esperando transporte público.',
+    color: COLORS.primary,
   },
   {
     id: 4,
-    icon: '⚡',
-    title: '¡Empieza Ya!',
-    description: 'Únete a la comunidad UrbanGo. Como conductor, genera ingresos extra. Como pasajero, ahorra dinero.',
-    color: COLORS.secondary,
+    icon: 'compass-outline',
+    title: '¿Cómo quieres usar UrbanGo?',
+    description: 'Elige tu rol y empieza a moverte por la ciudad.',
+    color: COLORS.primary,
   },
 ];
 
@@ -93,7 +93,7 @@ export default function Onboarding() {
         {ONBOARDING_DATA.map((item) => (
           <View key={item.id} style={styles.slide}>
             <View style={[styles.iconContainer, { backgroundColor: item.color + '20' }]}>
-              <Text style={styles.icon}>{item.icon}</Text>
+              <Ionicons name={item.icon as any} size={80} color="#1A2F4A" />
             </View>
             <Text style={styles.title}>{item.title}</Text>
             <Text style={styles.description}>{item.description}</Text>
@@ -126,12 +126,12 @@ export default function Onboarding() {
           onPress={goToNext}
         >
           <Text style={styles.buttonText}>
-            {currentIndex === ONBOARDING_DATA.length - 1 ? 'Comenzar' : 'Siguiente'}
+            {currentIndex === 0 ? 'Continuar' : currentIndex === ONBOARDING_DATA.length - 1 ? 'Comenzar' : 'Siguiente'}
           </Text>
           <Ionicons
             name="arrow-forward"
             size={20}
-            color={currentIndex === ONBOARDING_DATA.length - 1 ? COLORS.secondary : COLORS.white}
+            color={COLORS.white}
           />
         </TouchableOpacity>
       </View>
@@ -152,8 +152,8 @@ const styles = StyleSheet.create({
     paddingVertical: SPACING.md,
   },
   logo: {
-    width: 100,
-    height: 40,
+    width: SCREEN_WIDTH * 0.35,
+    height: 50,
   },
   skipButton: {
     paddingHorizontal: SPACING.md,
@@ -175,9 +175,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: SPACING.xl,
   },
   iconContainer: {
-    width: 140,
-    height: 140,
-    borderRadius: 70,
+    width: SCREEN_WIDTH * 0.35,
+    height: SCREEN_WIDTH * 0.35,
+    borderRadius: SCREEN_WIDTH * 0.175,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: SPACING.xl,
@@ -186,22 +186,25 @@ const styles = StyleSheet.create({
     fontSize: 80,
   },
   title: {
-    fontSize: 28,
+    fontSize: SCREEN_WIDTH * 0.065,
     fontWeight: 'bold',
     color: COLORS.text,
     textAlign: 'center',
     marginBottom: SPACING.md,
+    paddingHorizontal: SPACING.sm,
   },
   description: {
-    fontSize: FONT_SIZES.lg,
+    fontSize: SCREEN_WIDTH * 0.04,
     color: COLORS.textLight,
     textAlign: 'center',
-    lineHeight: 24,
-    paddingHorizontal: SPACING.md,
+    lineHeight: SCREEN_WIDTH * 0.06,
+    paddingHorizontal: SPACING.lg,
+    maxWidth: SCREEN_WIDTH * 0.85,
   },
   footer: {
     paddingHorizontal: SPACING.lg,
     paddingBottom: SPACING.xl,
+    paddingTop: SPACING.md,
   },
   pagination: {
     flexDirection: 'row',
@@ -218,9 +221,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: SPACING.md,
+    paddingVertical: SPACING.lg,
     borderRadius: RADIUS.lg,
     gap: SPACING.sm,
+    minHeight: 56,
   },
   buttonText: {
     fontSize: FONT_SIZES.lg,

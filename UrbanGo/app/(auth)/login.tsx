@@ -126,15 +126,15 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   header: {
-    paddingTop: SPACING.xl,
+    paddingTop: SPACING.xxl,
     paddingBottom: SPACING.xl,
     paddingHorizontal: SPACING.lg,
     alignItems: 'center',
   },
   logo: {
-    width: 150,
-    height: 60,
-    marginBottom: SPACING.lg,
+    width: 220,
+    height: 90,
+    marginBottom: SPACING.xl,
   },
   title: {
     fontSize: 32,
