@@ -281,6 +281,7 @@ export default function ConductorRuta() {
                 style={styles.menuItem}
                 onPress={() => {
                   setMenuVisible(false);
+                  router.push('/ajustes');
                 }}
               >
                 <Ionicons name="settings-outline" size={24} color={COLORS.primary} />
@@ -294,6 +295,7 @@ export default function ConductorRuta() {
                 style={styles.menuItem}
                 onPress={() => {
                   setMenuVisible(false);
+                  router.push('/acerca-de');
                 }}
               >
                 <Ionicons name="information-circle-outline" size={24} color={COLORS.primary} />

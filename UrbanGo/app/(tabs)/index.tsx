@@ -191,7 +191,7 @@ export default function Home() {
                 style={styles.menuItem}
                 onPress={() => {
                   setMenuVisible(false);
-                  // TODO: Navegar a ajustes
+                  router.push('/ajustes');
                 }}
               >
                 <Ionicons name="settings-outline" size={24} color={COLORS.primary} />
@@ -205,7 +205,7 @@ export default function Home() {
                 style={styles.menuItem}
                 onPress={() => {
                   setMenuVisible(false);
-                  // TODO: Navegar a acerca de
+                  router.push('/acerca-de');
                 }}
               >
                 <Ionicons name="information-circle-outline" size={24} color={COLORS.primary} />

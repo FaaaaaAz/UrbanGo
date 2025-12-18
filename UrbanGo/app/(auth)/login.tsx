@@ -132,8 +132,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   logo: {
-    width: 220,
-    height: 90,
+    width: 280,
+    height: 120,
     marginBottom: SPACING.xl,
   },
   title: {
@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
     marginBottom: SPACING.lg,
   },
   loginButtonText: {
-    color: COLORS.secondary,
+    color: COLORS.white,
     fontSize: FONT_SIZES.lg,
     fontWeight: 'bold',
   },

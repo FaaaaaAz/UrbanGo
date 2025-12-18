@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   actionButton: {
-    backgroundColor: COLORS.secondary,
+    backgroundColor: COLORS.primary,
     borderRadius: RADIUS.lg,
     paddingVertical: SPACING.md,
     paddingHorizontal: SPACING.lg,

@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { COLORS, SPACING, FONT_SIZES, RADIUS } from '../../config/constants';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { Marker, PROVIDER_GOOGLE, Polyline } from 'react-native-maps';
 import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
 
@@ -23,7 +23,61 @@ const viajeActual = {
   ubicacionActual: {
     latitude: -16.5050,
     longitude: -68.1193
+  },
+  destino: {
+    latitude: -16.5220,
+    longitude: -68.0850
   }
+};
+
+// Mock data para otros conductores disponibles
+const conductoresDisponibles = [
+  {
+    id: 2,
+    nombre: 'María López',
+    calificacion: 4.9,
+    vehiculo: 'Honda Civic Gris',
+    ubicacion: {
+      latitude: -16.4980,
+      longitude: -68.1250
+    }
+  },
+  {
+    id: 3,
+    nombre: 'Juan Pérez',
+    calificacion: 4.7,
+    vehiculo: 'Nissan Sentra Azul',
+    ubicacion: {
+      latitude: -16.5100,
+      longitude: -68.1100
+    }
+  },
+  {
+    id: 4,
+    nombre: 'Ana Torres',
+    calificacion: 4.8,
+    vehiculo: 'Mazda 3 Rojo',
+    ubicacion: {
+      latitude: -16.5000,
+      longitude: -68.1300
+    }
+  }
+];
+
+// Ruta simulada de Carlos Mendoza (línea entre su ubicación y destino)
+const rutaCarlosMendoza = [
+  { latitude: -16.5050, longitude: -68.1193 },
+  { latitude: -16.5080, longitude: -68.1150 },
+  { latitude: -16.5120, longitude: -68.1100 },
+  { latitude: -16.5160, longitude: -68.1020 },
+  { latitude: -16.5190, longitude: -68.0950 },
+  { latitude: -16.5220, longitude: -68.0850 }
+];
+
+// Mi ubicación actual (pasajero)
+const miUbicacion = {
+  latitude: -16.5070,
+  longitude: -68.1180
 };
 
 // Mock data para historial
@@ -49,6 +103,13 @@ const historialViajes = [
 export default function Rides() {
   const [modalActivo, setModalActivo] = useState<'viaje' | 'historial' | null>(null);
   const [viajeACalificar, setViajeACalificar] = useState<any>(null);
+  const [mostrarRuta, setMostrarRuta] = useState(false);
+
+  const handleMarkerPress = () => {
+    if (!mostrarRuta) {
+      setMostrarRuta(true);
+    }
+  };
 
   const getEstadoColor = (estado: string) => {
     switch (estado) {
@@ -82,16 +143,66 @@ export default function Rides() {
             longitudeDelta: 0.05,
           }}
         >
-          {/* Marcador del viaje actual */}
+          {/* Mi ubicación (pasajero) */}
+          <Marker
+            coordinate={miUbicacion}
+            title="Mi ubicación"
+            description="Estás aquí"
+          >
+            <View style={styles.miUbicacionMarker}>
+              <View style={styles.miUbicacionDot} />
+              <View style={styles.miUbicacionPulse} />
+            </View>
+          </Marker>
+
+          {/* Marcador del viaje actual - Carlos Mendoza */}
           <Marker
             coordinate={viajeActual.ubicacionActual}
             title={viajeActual.conductor.nombre}
             description={viajeActual.conductor.vehiculo}
+            onPress={handleMarkerPress}
           >
             <View style={styles.markerContainer}>
               <Ionicons name="car" size={24} color={COLORS.secondary} />
             </View>
           </Marker>
+
+          {/* Destino de Carlos Mendoza */}
+          {mostrarRuta && (
+            <Marker
+              coordinate={viajeActual.destino}
+              title="Destino"
+              description="Obrajes"
+            >
+              <View style={styles.destinoMarker}>
+                <Ionicons name="flag" size={20} color={COLORS.danger} />
+              </View>
+            </Marker>
+          )}
+
+          {/* Ruta de Carlos Mendoza */}
+          {mostrarRuta && (
+            <Polyline
+              coordinates={rutaCarlosMendoza}
+              strokeColor="#00D9FF"
+              strokeWidth={5}
+              lineDashPattern={[1, 10]}
+            />
+          )}
+
+          {/* Otros conductores disponibles */}
+          {conductoresDisponibles.map((conductor) => (
+            <Marker
+              key={conductor.id}
+              coordinate={conductor.ubicacion}
+              title={conductor.nombre}
+              description={conductor.vehiculo}
+            >
+              <View style={[styles.markerContainer, styles.otherDriverMarker]}>
+                <Ionicons name="car" size={20} color={COLORS.primary} />
+              </View>
+            </Marker>
+          ))}
         </MapView>
 
         {/* Botones flotantes sobre el mapa */}
@@ -603,5 +714,54 @@ const styles = StyleSheet.create({
     fontSize: FONT_SIZES.md,
     fontWeight: '600',
     textAlign: 'center',
+  },
+  // Estilos para mi ubicación
+  miUbicacionMarker: {
+    width: 24,
+    height: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  miUbicacionDot: {
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: COLORS.secondary,
+    borderWidth: 4,
+    borderColor: COLORS.white,
+    zIndex: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.5,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  miUbicacionPulse: {
+    position: 'absolute',
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: COLORS.secondary,
+    opacity: 0.4,
+    zIndex: 1,
+  },
+  // Estilos para destino
+  destinoMarker: {
+    width: 36,
+    height: 36,
+    backgroundColor: COLORS.white,
+    borderRadius: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 4,
+    borderWidth: 2,
+    borderColor: COLORS.danger,
+  },
+  // Estilos para otros conductores
+  otherDriverMarker: {
+    width: 36,
+    height: 36,
+    borderColor: COLORS.primary,
+    opacity: 0.8,
   },
 });
