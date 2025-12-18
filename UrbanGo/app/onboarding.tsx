@@ -119,10 +119,7 @@ export default function Onboarding() {
         </View>
 
         <TouchableOpacity
-          style={[
-            styles.button,
-            { backgroundColor: currentIndex === ONBOARDING_DATA.length - 1 ? COLORS.primary : COLORS.secondary },
-          ]}
+          style={styles.button}
           onPress={goToNext}
         >
           <Text style={styles.buttonText}>
@@ -225,6 +222,7 @@ const styles = StyleSheet.create({
     borderRadius: RADIUS.lg,
     gap: SPACING.sm,
     minHeight: 56,
+    backgroundColor: COLORS.primary,
   },
   buttonText: {
     fontSize: FONT_SIZES.lg,
