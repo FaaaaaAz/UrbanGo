@@ -19,7 +19,7 @@ export default function Register() {
   const handleRegister = () => {
     // TODO: Implementar lógica de registro
     console.log('Register:', formData);
-    router.replace('/(drawer)/(tabs)');
+    router.replace('/(tabs)');
   };
 
   return (

@@ -9,13 +9,9 @@
     "newArchEnabled": true,
     "scheme": "urbango",
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/LogoUrban.png",
       "resizeMode": "contain",
-      "backgroundColor": "#2563eb"
-    },
-    "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.urbango.app"
+      "backgroundColor": "#FFFFFF"
     },
     "android": {
       "adaptiveIcon": {
@@ -24,7 +20,19 @@
       },
       "package": "com.urbango.app",
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyDXS-UVHb53tsCuFFd3VkUcOebixPgxHFo"
+        }
+      }
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.urbango.app",
+      "config": {
+        "googleMapsApiKey": "AIzaSyDXS-UVHb53tsCuFFd3VkUcOebixPgxHFo"
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png",

@@ -1,8 +1,8 @@
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS } from '../../../config/constants';
+import { COLORS } from '../../config/constants';
 
-export default function TabsLayout() {
+export default function ConductorTabsLayout() {
   return (
     <Tabs
       screenOptions={{
@@ -21,27 +21,18 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Inicio',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="routes"
-        options={{
-          title: 'Rutas',
+          title: 'Ruta',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="map" size={size} color={color} />
           ),
         }}
       />
       <Tabs.Screen
-        name="rides"
+        name="earnings"
         options={{
-          title: 'Viajes',
+          title: 'Ingresos',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="car" size={size} color={color} />
+            <Ionicons name="cash" size={size} color={color} />
           ),
         }}
       />
