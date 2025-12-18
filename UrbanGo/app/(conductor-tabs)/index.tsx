@@ -41,7 +41,15 @@ export default function ConductorRuta() {
   const [puntoInicio, setPuntoInicio] = useState('');
   const [direccionGeneral, setDireccionGeneral] = useState('');
   const [horario, setHorario] = useState('');
-  const [cupos, setCupos] = useState('2');
+  const [cupos, setCupos] = useState(2);
+
+  const incrementarCupos = () => {
+    if (cupos < 15) setCupos(cupos + 1);
+  };
+
+  const decrementarCupos = () => {
+    if (cupos > 1) setCupos(cupos - 1);
+  };
 
   const handlePublicarRuta = () => {
     setRutaPublicada(true);
@@ -57,7 +65,7 @@ export default function ConductorRuta() {
             <Ionicons name="menu" size={28} color={COLORS.white} />
           </TouchableOpacity>
           <View style={styles.headerCenter}>
-            <Text style={styles.greeting}>¡Hola, Conductor!</Text>
+            <Text style={styles.greeting}>¡Hola, Carlos!</Text>
             <Text style={styles.subtitle}>Gestiona tu ruta diaria</Text>
           </View>
           <TouchableOpacity style={styles.notificationButton}>
@@ -150,10 +158,7 @@ export default function ConductorRuta() {
                     <Ionicons name="location" size={16} color={COLORS.textLight} />
                     <Text style={styles.detailText}>{solicitud.puntoRecogida}</Text>
                   </View>
-                  <View style={styles.detailRow}>
-                    <Ionicons name="time" size={16} color={COLORS.warning} />
-                    <Text style={styles.desvioText}>+{solicitud.desvio} min de desvío</Text>
-                  </View>
+                  
                   <View style={styles.detailRow}>
                     <Ionicons name="cash" size={16} color={COLORS.secondary} />
                     <Text style={styles.precioText}>{solicitud.precio} Bs</Text>
@@ -192,7 +197,13 @@ export default function ConductorRuta() {
               </TouchableOpacity>
             </View>
 
-            <ScrollView style={styles.modalBody}>
+            <ScrollView 
+              style={styles.modalBody}
+              contentContainerStyle={styles.modalBodyContent}
+              showsVerticalScrollIndicator={true}
+              bounces={false}
+              keyboardShouldPersistTaps="handled"
+            >
               <View style={styles.formGroup}>
                 <Text style={styles.label}>Punto de Inicio</Text>
                 <View style={styles.inputContainer}>
@@ -233,19 +244,28 @@ export default function ConductorRuta() {
               </View>
 
               <View style={styles.formGroup}>
-                <Text style={styles.label}>Cupos Disponibles (1-3)</Text>
-                <View style={styles.cuposContainer}>
-                  {['1', '2', '3'].map((num) => (
-                    <TouchableOpacity
-                      key={num}
-                      style={[styles.cupoButton, cupos === num && styles.cupoButtonActive]}
-                      onPress={() => setCupos(num)}
-                    >
-                      <Text style={[styles.cupoButtonText, cupos === num && styles.cupoButtonTextActive]}>
-                        {num}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
+                <Text style={styles.label}>Cupos Disponibles</Text>
+                <View style={styles.cuposCounter}>
+                  <TouchableOpacity 
+                    style={styles.counterButton}
+                    onPress={decrementarCupos}
+                    disabled={cupos <= 1}
+                  >
+                    <Ionicons name="remove" size={24} color={cupos <= 1 ? COLORS.textLight : COLORS.primary} />
+                  </TouchableOpacity>
+                  
+                  <View style={styles.counterDisplay}>
+                    <Text style={styles.counterNumber}>{cupos}</Text>
+                    <Text style={styles.counterLabel}>asiento{cupos !== 1 ? 's' : ''}</Text>
+                  </View>
+                  
+                  <TouchableOpacity 
+                    style={styles.counterButton}
+                    onPress={incrementarCupos}
+                    disabled={cupos >= 15}
+                  >
+                    <Ionicons name="add" size={24} color={cupos >= 15 ? COLORS.textLight : COLORS.primary} />
+                  </TouchableOpacity>
                 </View>
               </View>
 
@@ -623,6 +643,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: RADIUS.xl,
     borderTopRightRadius: RADIUS.xl,
     maxHeight: '80%',
+    height: '80%',
   },
   modalHeader: {
     flexDirection: 'row',
@@ -638,7 +659,11 @@ const styles = StyleSheet.create({
     color: COLORS.text,
   },
   modalBody: {
+    flex: 1,
+  },
+  modalBodyContent: {
     padding: SPACING.lg,
+    paddingBottom: SPACING.lg,
   },
   formGroup: {
     marginBottom: SPACING.lg,
@@ -662,29 +687,37 @@ const styles = StyleSheet.create({
     fontSize: FONT_SIZES.md,
     color: COLORS.text,
   },
-  cuposContainer: {
+  cuposCounter: {
     flexDirection: 'row',
-    gap: SPACING.sm,
-  },
-  cupoButton: {
-    flex: 1,
-    paddingVertical: SPACING.md,
-    borderRadius: RADIUS.md,
-    borderWidth: 2,
-    borderColor: COLORS.backgroundDark,
     alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: COLORS.backgroundLight,
+    borderRadius: RADIUS.lg,
+    padding: SPACING.md,
+    gap: SPACING.xl,
   },
-  cupoButtonActive: {
-    backgroundColor: COLORS.secondary,
-    borderColor: COLORS.secondary,
+  counterButton: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: COLORS.white,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 2,
   },
-  cupoButtonText: {
-    fontSize: FONT_SIZES.lg,
-    fontWeight: '600',
+  counterDisplay: {
+    alignItems: 'center',
+    minWidth: 80,
+  },
+  counterNumber: {
+    fontSize: 36,
+    fontWeight: 'bold',
+    color: COLORS.primary,
+  },
+  counterLabel: {
+    fontSize: FONT_SIZES.sm,
     color: COLORS.textLight,
-  },
-  cupoButtonTextActive: {
-    color: COLORS.white,
+    marginTop: SPACING.xs,
   },
   submitButton: {
     backgroundColor: COLORS.secondary,

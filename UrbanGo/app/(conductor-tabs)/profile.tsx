@@ -262,7 +262,7 @@ export default function ConductorProfile() {
           </View>
 
           <View style={styles.footer}>
-            <Text style={styles.footerText}>Versión 1.0.0</Text>
+            <Text style={styles.footerText}>Versión MVP</Text>
           </View>
         </View>
       </ScrollView>

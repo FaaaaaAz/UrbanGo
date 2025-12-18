@@ -78,7 +78,7 @@ export default function RegisterPasajero() {
                   <Ionicons name="person-outline" size={20} color={COLORS.textLight} style={styles.inputIcon} />
                   <TextInput
                     style={styles.input}
-                    placeholder="María"
+                    placeholder="Juan"
                     placeholderTextColor={COLORS.textSecondary}
                     value={formData.nombre}
                     onChangeText={(text) => setFormData({...formData, nombre: text})}
@@ -91,7 +91,7 @@ export default function RegisterPasajero() {
                 <View style={styles.inputWrapper}>
                   <TextInput
                     style={styles.input}
-                    placeholder="García"
+                    placeholder="Pérez"
                     placeholderTextColor={COLORS.textSecondary}
                     value={formData.apellido}
                     onChangeText={(text) => setFormData({...formData, apellido: text})}
@@ -106,7 +106,7 @@ export default function RegisterPasajero() {
                 <Ionicons name="mail-outline" size={20} color={COLORS.textLight} style={styles.inputIcon} />
                 <TextInput
                   style={styles.input}
-                  placeholder="pasajero@email.com"
+                  placeholder="juan.perez@example.com"
                   placeholderTextColor={COLORS.textSecondary}
                   value={formData.email}
                   onChangeText={(text) => setFormData({...formData, email: text})}

@@ -6,13 +6,13 @@ import { COLORS, SPACING, FONT_SIZES, RADIUS } from '../config/constants';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function Ajustes() {
-  const router = useRouter();
-  const [notificacionesViajes, setNotificacionesViajes] = useState(true);
-  const [notificacionesOfertas, setNotificacionesOfertas] = useState(true);
-  const [modoOscuro, setModoOscuro] = useState(false);
-  const [compartirUbicacion, setCompartirUbicacion] = useState(true);
+const router = useRouter();
+const [notificacionesViajes, setNotificacionesViajes] = useState(true);
+const [notificacionesOfertas, setNotificacionesOfertas] = useState(true);
+const [modoOscuro, setModoOscuro] = useState(false);
+const [compartirUbicacion, setCompartirUbicacion] = useState(true);
 
-  return (
+return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
@@ -205,7 +205,7 @@ export default function Ajustes() {
         </View>
 
         <View style={styles.versionContainer}>
-          <Text style={styles.versionText}>Versión 1.0.0</Text>
+          <Text style={styles.versionText}>Versión MVP</Text>
         </View>
       </ScrollView>
     </SafeAreaView>

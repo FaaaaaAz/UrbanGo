@@ -44,7 +44,7 @@ const conductoresDisponibles = [
   },
   {
     id: 3,
-    nombre: 'Juan Pérez',
+    nombre: 'Jose Luis',
     calificacion: 4.7,
     vehiculo: 'Nissan Sentra Azul',
     ubicacion: {
