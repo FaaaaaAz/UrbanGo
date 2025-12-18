@@ -65,7 +65,7 @@ export default function RegisterConductor() {
                   <Ionicons name="person-outline" size={20} color={COLORS.textLight} style={styles.inputIcon} />
                   <TextInput
                     style={styles.input}
-                    placeholder="Juan"
+                    placeholder="Carlos"
                     placeholderTextColor={COLORS.textSecondary}
                     value={formData.nombre}
                     onChangeText={(text) => setFormData({...formData, nombre: text})}
@@ -78,7 +78,7 @@ export default function RegisterConductor() {
                 <View style={styles.inputWrapper}>
                   <TextInput
                     style={styles.input}
-                    placeholder="Pérez"
+                    placeholder="Mendoza"
                     placeholderTextColor={COLORS.textSecondary}
                     value={formData.apellido}
                     onChangeText={(text) => setFormData({...formData, apellido: text})}
@@ -93,7 +93,7 @@ export default function RegisterConductor() {
                 <Ionicons name="mail-outline" size={20} color={COLORS.textLight} style={styles.inputIcon} />
                 <TextInput
                   style={styles.input}
-                  placeholder="conductor@email.com"
+                  placeholder="carlos.mendoza@example.com"
                   placeholderTextColor={COLORS.textSecondary}
                   value={formData.email}
                   onChangeText={(text) => setFormData({...formData, email: text})}

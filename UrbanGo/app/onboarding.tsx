@@ -68,11 +68,7 @@ export default function Onboarding() {
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       {/* Header con Skip */}
       <View style={styles.header}>
-        <Image
-          source={require('../assets/LogoUrban.png')}
-          style={styles.logo}
-          resizeMode="contain"
-        />
+        
         {currentIndex < ONBOARDING_DATA.length - 1 && (
           <TouchableOpacity onPress={skip} style={styles.skipButton}>
             <Text style={styles.skipText}>Saltar</Text>

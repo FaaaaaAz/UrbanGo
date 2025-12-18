@@ -29,7 +29,7 @@ export default function AcercaDe() {
             style={styles.logo}
             resizeMode="contain"
           />
-          <Text style={styles.version}>Versión 1.0.0</Text>
+          <Text style={styles.version}>Versión MVP</Text>
           <Text style={styles.tagline}>Movilidad compartida para Bolivia</Text>
         </View>
 
@@ -100,45 +100,50 @@ export default function AcercaDe() {
 
           <View style={styles.teamGrid}>
             <View style={styles.teamMember}>
-              <View style={[styles.avatar, { backgroundColor: COLORS.primary + '20' }]}>
-                <Ionicons name="person" size={32} color={COLORS.primary} />
-              </View>
+              <Image
+                source={require('../assets/Fabian.png')}
+                style={styles.avatarImage}
+              />
               <Text style={styles.memberName}>Fabian Azeñas</Text>
               <Text style={styles.memberRole}>Ingeniero de Sistemas</Text>
               <Text style={styles.memberDescription}>Desarrollo & Arquitectura</Text>
             </View>
 
             <View style={styles.teamMember}>
-              <View style={[styles.avatar, { backgroundColor: COLORS.primary + '20' }]}>
-                <Ionicons name="person" size={32} color={COLORS.primary} />
-              </View>
+              <Image
+                source={require('../assets/Camilo.png')}
+                style={styles.avatarImage}
+              />
               <Text style={styles.memberName}>Camilo Zuleta</Text>
               <Text style={styles.memberRole}>Ingeniero de Sistemas</Text>
               <Text style={styles.memberDescription}>Backend & Infraestructura</Text>
             </View>
 
             <View style={styles.teamMember}>
-              <View style={[styles.avatar, { backgroundColor: COLORS.primary + '20' }]}>
-                <Ionicons name="person" size={32} color={COLORS.primary} />
-              </View>
+              <Image
+                source={require('../assets/Adrian.png')}
+                style={styles.avatarImage}
+              />
               <Text style={styles.memberName}>Adrian Coello</Text>
               <Text style={styles.memberRole}>Ingeniero de Sistemas</Text>
               <Text style={styles.memberDescription}>Frontend & UX/UI</Text>
             </View>
 
             <View style={styles.teamMember}>
-              <View style={[styles.avatar, { backgroundColor: COLORS.secondary + '20' }]}>
-                <Ionicons name="person" size={32} color={COLORS.secondary} />
-              </View>
+              <Image
+                source={require('../assets/Sebastian.png')}
+                style={styles.avatarImage}
+              />
               <Text style={styles.memberName}>Sebastian Peñarrieta</Text>
               <Text style={styles.memberRole}>Ingeniero Financiero</Text>
               <Text style={styles.memberDescription}>Finanzas & Estrategia</Text>
             </View>
 
             <View style={styles.teamMember}>
-              <View style={[styles.avatar, { backgroundColor: COLORS.secondary + '20' }]}>
-                <Ionicons name="person" size={32} color={COLORS.secondary} />
-              </View>
+              <Image
+                source={require('../assets/Salvador.png')}
+                style={styles.avatarImage}
+              />
               <Text style={styles.memberName}>Salvador Uscamayta</Text>
               <Text style={styles.memberRole}>Ingeniero Industrial</Text>
               <Text style={styles.memberDescription}>Operaciones & Logística</Text>
@@ -146,31 +151,6 @@ export default function AcercaDe() {
           </View>
         </View>
 
-        {/* Impacto */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Ionicons name="trending-up-outline" size={24} color={COLORS.primary} />
-            <Text style={styles.sectionTitle}>Nuestro Impacto</Text>
-          </View>
-          <View style={styles.statsGrid}>
-            <View style={styles.statCard}>
-              <Ionicons name="car-sport" size={32} color={COLORS.primary} />
-              <Text style={styles.statNumber}>500+</Text>
-              <Text style={styles.statLabel}>Conductores Activos</Text>
-            </View>
-            <View style={styles.statCard}>
-              <Ionicons name="people" size={32} color={COLORS.primary} />
-              <Text style={styles.statNumber}>2,000+</Text>
-              <Text style={styles.statLabel}>Pasajeros Registrados</Text>
-            </View>
-            
-            <View style={styles.statCard}>
-              <Ionicons name="location" size={32} color={COLORS.secondary} />
-              <Text style={styles.statNumber}>1</Text>
-              <Text style={styles.statLabel}>Ciudad</Text>
-            </View>
-          </View>
-        </View>
 
         {/* Contacto */}
         <View style={styles.section}>
@@ -331,6 +311,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: SPACING.sm,
+  },
+  avatarImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    marginBottom: SPACING.sm,
+    borderWidth: 3,
+    borderColor: COLORS.primary,
   },
   memberName: {
     fontSize: FONT_SIZES.lg,
