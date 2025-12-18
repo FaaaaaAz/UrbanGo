@@ -25,25 +25,28 @@ export const PRICING = {
   TAXI_BASE_PRICE: 15,
 };
 
-// Colores de la app
+// Colores de la app - Paleta profesional para carpooling urbano
 export const COLORS = {
-  primary: '#2563eb',
-  primaryDark: '#1e40af',
-  primaryLight: '#3b82f6',
-  secondary: '#10b981',
-  accent: '#f59e0b',
-  background: '#f5f5f5',
-  backgroundDark: '#1f2937',
-  card: '#ffffff',
-  text: '#1f2937',
-  textLight: '#6b7280',
-  textDark: '#111827',
-  white: '#ffffff',
+  primary: '#1E3A5F', // Azul petróleo - confianza y seguridad
+  primaryDark: '#152B45',
+  primaryLight: '#2A4F7A',
+  secondary: '#2ECC71', // Verde urbano - acción, "go", progreso
+  secondaryDark: '#27AE60',
+  secondaryLight: '#58D68D',
+  accent: '#2ECC71', // Verde para acciones principales
+  background: '#F2F4F7', // Gris claro - fondos
+  backgroundLight: '#FFFFFF',
+  backgroundDark: '#E8EBF0',
+  card: '#FFFFFF',
+  text: '#4A4A4A', // Gris oscuro - texto principal
+  textLight: '#7A7A7A',
+  textSecondary: '#A0A0A0',
+  white: '#FFFFFF',
   black: '#000000',
-  error: '#ef4444',
-  success: '#10b981',
-  warning: '#f59e0b',
-  info: '#3b82f6',
+  error: '#E74C3C',
+  success: '#2ECC71',
+  warning: '#F39C12',
+  info: '#3498DB',
   gray: {
     50: '#f9fafb',
     100: '#f3f4f6',
