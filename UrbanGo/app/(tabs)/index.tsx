@@ -69,7 +69,7 @@ export default function Home() {
                 </View>
                 <View style={styles.statusTextContainer}>
                   <Text style={styles.statusTitle}>Tu conductor va en camino</Text>
-                  <Text style={styles.statusSubtitle}>Llegará en aproximadamente 8 minutos</Text>
+                  <Text style={styles.statusSubtitle}>Llegará en aproximadamente 3 minutos</Text>
                 </View>
               </View>
 
