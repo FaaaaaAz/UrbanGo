@@ -1,160 +1,256 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { COLORS, SPACING, FONT_SIZES, RADIUS } from '../../config/constants';
 import { Ionicons } from '@expo/vector-icons';
+import { useState } from 'react';
 
-// Mock data para historial
-const historialViajes = [
+// Mock data para historial de comisiones (15% de comisión)
+const historialComisiones = [
   {
-    id: 1,
-    fecha: '2025-12-18',
-    ruta: 'Sopocachi → Obrajes',
-    pasajeros: 2,
-    ganancia: 10,
+    id: 4821,
+    fecha: '2026-03-11',
+    tarifa: 5,
+    comision: 0.75, // 15% de 5
   },
   {
-    id: 2,
-    fecha: '2025-12-17',
-    ruta: 'Sopocachi → Obrajes',
-    pasajeros: 3,
-    ganancia: 15,
+    id: 4820,
+    fecha: '2026-03-11',
+    tarifa: 7,
+    comision: 1.05, // 15% de 7
   },
   {
-    id: 3,
-    fecha: '2025-12-16',
-    ruta: 'Centro → Calacoto',
-    pasajeros: 2,
-    ganancia: 12,
+    id: 4819,
+    fecha: '2026-03-10',
+    tarifa: 4,
+    comision: 0.6, // 15% de 4
+  },
+  {
+    id: 4818,
+    fecha: '2026-03-10',
+    tarifa: 5,
+    comision: 0.75, // 15% de 5
   },
 ];
 
 export default function ConductorEarnings() {
-  const gananciasHoy = 10;
-  const gananciasSemana = 37;
-  const estimacionRuta = 15;
+  const [modalPagoVisible, setModalPagoVisible] = useState(false);
+  
+  // Estado del saldo de comisión
+  const saldoComision = 32; // Cuánto debe el conductor a la app
+  const limiteComision = 50; // Límite antes del bloqueo
+  const gananciasHoy = 120;
+  const porcentajeComision = (saldoComision / limiteComision) * 100;
+  const cuentaBloqueada = saldoComision >= limiteComision;
+
+  const handlePagarSaldo = (metodo: string) => {
+    // Aquí iría la lógica de pago
+    console.log(`Pagar con: ${metodo}`);
+    setModalPagoVisible(false);
+    // Después de pagar, el saldo se actualizaría a 0
+  };
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
       <ScrollView style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>Mis Ingresos</Text>
-          <Text style={styles.headerSubtitle}>Sigue ganando y creciendo</Text>
+          <Text style={styles.headerTitle}>Billetera</Text>
+          <Text style={styles.headerSubtitle}>Gestiona tus ganancias y pagos</Text>
         </View>
 
         <View style={styles.content}>
-          {/* Ganancias Cards */}
-          <View style={styles.earningsGrid}>
-            <View style={styles.earningCard}>
-              <View style={styles.earningIcon}>
-                <Ionicons name="calendar-outline" size={24} color={COLORS.secondary} />
-              </View>
-              <Text style={styles.earningLabel}>Hoy</Text>
-              <Text style={styles.earningValue}>{gananciasHoy} Bs</Text>
+          {/* Saldo de Comisión - Parte principal del bloqueo */}
+          <View style={[
+            styles.comisionCard,
+            cuentaBloqueada && styles.comisionCardBloqueada
+          ]}>
+            <View style={styles.comisionHeader}>
+              <Ionicons 
+                name="wallet-outline" 
+                size={28} 
+                color={cuentaBloqueada ? COLORS.error : COLORS.primary} 
+              />
+              <Text style={styles.comisionTitle}>Saldo de comisión</Text>
             </View>
 
-            <View style={styles.earningCard}>
-              <View style={styles.earningIcon}>
-                <Ionicons name="stats-chart-outline" size={24} color={COLORS.primary} />
-              </View>
-              <Text style={styles.earningLabel}>Esta Semana</Text>
-              <Text style={styles.earningValue}>{gananciasSemana} Bs</Text>
+            <View style={styles.comisionInfo}>
+              <Text style={styles.comisionLabel}>Debes a la app:</Text>
+              <Text style={[
+                styles.comisionAmount,
+                cuentaBloqueada && styles.comisionAmountError
+              ]}>
+                {saldoComision} Bs
+              </Text>
+              <Text style={styles.comisionLimite}>Límite de pago: {limiteComision} Bs</Text>
             </View>
-          </View>
 
-          {/* Estimación */}
-          <View style={styles.estimacionCard}>
-            <View style={styles.estimacionHeader}>
-              <Ionicons name="trending-up" size={32} color={COLORS.secondary} />
-              <View style={styles.estimacionInfo}>
-                <Text style={styles.estimacionTitle}>Estimación</Text>
-                <Text style={styles.estimacionSubtitle}>Completa tu ruta de hoy</Text>
+            {/* Barra visual de progreso */}
+            <View style={styles.barraContainer}>
+              <View style={styles.barraLabels}>
+                <Text style={styles.barraText}>{saldoComision} / {limiteComision} Bs</Text>
+                <Text style={[
+                  styles.estadoText,
+                  cuentaBloqueada ? styles.estadoTextError : styles.estadoTextSuccess
+                ]}>
+                  {cuentaBloqueada ? '🔴 Bloqueado' : '🟢 Activo'}
+                </Text>
               </View>
-            </View>
-            <View style={styles.estimacionAmount}>
-              <Text style={styles.estimacionLabel}>Ganarás aproximadamente</Text>
-              <Text style={styles.estimacionValue}>+{estimacionRuta} Bs</Text>
-            </View>
-          </View>
-
-          {/* Gamificación */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Tus Logros</Text>
-            
-            <View style={styles.achievementsContainer}>
-              <View style={styles.achievementCard}>
-                <View style={styles.achievementIcon}>
-                  <Ionicons name="star" size={32} color="#FFB800" />
-                </View>
-                <Text style={styles.achievementTitle}>Conductor Frecuente</Text>
-                <Text style={styles.achievementDesc}>10+ viajes este mes</Text>
-              </View>
-
-              <View style={styles.achievementCard}>
-                <View style={[styles.achievementIcon, { backgroundColor: COLORS.secondary + '20' }]}>
-                  <Ionicons name="flash" size={32} color={COLORS.secondary} />
-                </View>
-                <Text style={styles.achievementTitle}>Rápido y Confiable</Text>
-                <Text style={styles.achievementDesc}>95% puntualidad</Text>
-              </View>
-
-              <View style={[styles.achievementCard, styles.achievementLocked]}>
-                <View style={[styles.achievementIcon, { backgroundColor: COLORS.backgroundDark }]}>
-                  <Ionicons name="trophy" size={32} color={COLORS.textLight} />
-                </View>
-                <Text style={styles.achievementTitle}>Conductor Élite</Text>
-                <Text style={styles.achievementDesc}>Completa 50 viajes</Text>
-                <View style={styles.lockedBadge}>
-                  <Ionicons name="lock-closed" size={12} color={COLORS.textLight} />
-                  <Text style={styles.lockedText}>Bloqueado</Text>
-                </View>
-              </View>
-            </View>
-          </View>
-
-          {/* Bonos */}
-          <View style={styles.bonusCard}>
-            <View style={styles.bonusHeader}>
-              <Ionicons name="gift" size={24} color={COLORS.white} />
-              <Text style={styles.bonusTitle}>Bono por Constancia</Text>
-            </View>
-            <Text style={styles.bonusDesc}>
-              Completa 5 viajes esta semana y gana un bono de 10 Bs
-            </Text>
-            <View style={styles.bonusProgress}>
               <View style={styles.progressBar}>
-                <View style={[styles.progressFill, { width: '60%' }]} />
+                <View style={[
+                  styles.progressFill,
+                  { width: `${Math.min(porcentajeComision, 100)}%` },
+                  cuentaBloqueada && styles.progressFillError
+                ]} />
               </View>
-              <Text style={styles.progressText}>3/5 viajes</Text>
+            </View>
+
+            {/* Estado y mensaje */}
+            <View style={[
+              styles.estadoCard,
+              cuentaBloqueada ? styles.estadoCardError : styles.estadoCardSuccess
+            ]}>
+              <Text style={[
+                styles.estadoMessage,
+                cuentaBloqueada ? styles.estadoMessageError : styles.estadoMessageSuccess
+              ]}>
+                {cuentaBloqueada 
+                  ? '⚠️ Cuenta bloqueada hasta pagar' 
+                  : '✓ Puedes seguir trabajando'
+                }
+              </Text>
+            </View>
+
+            {/* Botón de pago */}
+            <TouchableOpacity 
+              style={styles.pagarButton}
+              onPress={() => setModalPagoVisible(true)}
+            >
+              <Ionicons name="card-outline" size={20} color={COLORS.white} />
+              <Text style={styles.pagarButtonText}>Pagar saldo</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Ganancias de hoy */}
+          <View style={styles.gananciasCard}>
+            <View style={styles.gananciasIcon}>
+              <Ionicons name="cash-outline" size={28} color={COLORS.secondary} />
+            </View>
+            <View style={styles.gananciasInfo}>
+              <Text style={styles.gananciasLabel}>Ganancias de hoy</Text>
+              <Text style={styles.gananciasValue}>{gananciasHoy} Bs</Text>
             </View>
           </View>
 
-          {/* Historial */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Historial de Viajes</Text>
+          {/* Bonos disponibles */}
+          <View style={styles.bonosCard}>
+            <View style={styles.bonosHeader}>
+              <Ionicons name="gift" size={24} color={COLORS.secondary} />
+              <Text style={styles.bonosTitle}>Bonos disponibles</Text>
+            </View>
+            <View style={styles.bonoItem}>
+              <View style={styles.bonoIconWrapper}>
+                <Ionicons name="trophy" size={20} color="#FFB800" />
+              </View>
+              <Text style={styles.bonoText}>Completa 10 viajes → +20 Bs</Text>
+            </View>
+            <View style={styles.bonoProgress}>
+              <View style={styles.bonoProgressBar}>
+                <View style={[styles.bonoProgressFill, { width: '70%' }]} />
+              </View>
+              <Text style={styles.bonoProgressText}>7/10 viajes</Text>
+            </View>
+          </View>
 
-            {historialViajes.map((viaje) => (
-              <View key={viaje.id} style={styles.historialCard}>
-                <View style={styles.historialHeader}>
-                  <Text style={styles.historialFecha}>{viaje.fecha}</Text>
-                  <Text style={styles.historialGanancia}>+{viaje.ganancia} Bs</Text>
+          {/* Historial de comisiones */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Historial de comisiones</Text>
+
+            {historialComisiones.map((carrera) => (
+              <View key={carrera.id} style={styles.comisionHistorialCard}>
+                <View style={styles.comisionHistorialHeader}>
+                  <View style={styles.comisionHistorialTitleRow}>
+                    <Ionicons name="car-sport" size={18} color={COLORS.primary} />
+                    <Text style={styles.comisionHistorialId}>Carrera #{carrera.id}</Text>
+                  </View>
+                  <Text style={styles.comisionHistorialComision}>{carrera.comision} Bs</Text>
                 </View>
                 
-                <View style={styles.historialRuta}>
-                  <Ionicons name="navigate" size={16} color={COLORS.secondary} />
-                  <Text style={styles.historialRutaText}>{viaje.ruta}</Text>
-                </View>
-                
-                <View style={styles.historialFooter}>
-                  <View style={styles.pasajerosInfo}>
-                    <Ionicons name="people" size={16} color={COLORS.textLight} />
-                    <Text style={styles.historialPasajeros}>{viaje.pasajeros} pasajeros</Text>
+                <View style={styles.comisionHistorialDetails}>
+                  <View style={styles.comisionHistorialRow}>
+                    <Text style={styles.comisionHistorialLabel}>Tarifa:</Text>
+                    <Text style={styles.comisionHistorialValue}>{carrera.tarifa} Bs</Text>
+                  </View>
+                  <View style={styles.comisionHistorialRow}>
+                    <Text style={styles.comisionHistorialLabel}>Comisión:</Text>
+                    <Text style={styles.comisionHistorialValueHighlight}>{carrera.comision} Bs</Text>
                   </View>
                 </View>
+
+                <Text style={styles.comisionHistorialFecha}>{carrera.fecha}</Text>
               </View>
             ))}
           </View>
         </View>
       </ScrollView>
+
+      {/* Modal de opciones de pago */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalPagoVisible}
+        onRequestClose={() => setModalPagoVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Pagar con:</Text>
+              <TouchableOpacity 
+                onPress={() => setModalPagoVisible(false)}
+                style={styles.modalCloseButton}
+              >
+                <Ionicons name="close" size={24} color={COLORS.text} />
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.modalOptions}>
+              <TouchableOpacity 
+                style={styles.modalOption}
+                onPress={() => handlePagarSaldo('QR')}
+              >
+                <Ionicons name="qr-code" size={32} color={COLORS.primary} />
+                <Text style={styles.modalOptionText}>QR</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity 
+                style={styles.modalOption}
+                onPress={() => handlePagarSaldo('Transferencia')}
+              >
+                <Ionicons name="swap-horizontal" size={32} color={COLORS.primary} />
+                <Text style={styles.modalOptionText}>Transferencia</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity 
+                style={styles.modalOption}
+                onPress={() => handlePagarSaldo('Tigo Money')}
+              >
+                <Ionicons name="phone-portrait" size={32} color={COLORS.primary} />
+                <Text style={styles.modalOptionText}>Tigo Money</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity 
+                style={styles.modalOption}
+                onPress={() => handlePagarSaldo('Tarjeta')}
+              >
+                <Ionicons name="card" size={32} color={COLORS.primary} />
+                <Text style={styles.modalOptionText}>Tarjeta</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.modalFooter}>
+              <Text style={styles.modalFooterText}>Monto a pagar: {saldoComision} Bs</Text>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -187,80 +283,232 @@ const styles = StyleSheet.create({
   content: {
     padding: SPACING.lg,
   },
-  earningsGrid: {
-    flexDirection: 'row',
-    gap: SPACING.md,
-    marginBottom: SPACING.lg,
-  },
-  earningCard: {
-    flex: 1,
+  
+  // Estilos para Saldo de Comisión (Bloqueo)
+  comisionCard: {
     backgroundColor: COLORS.white,
     borderRadius: RADIUS.lg,
-    padding: SPACING.md,
-    elevation: 2,
-    alignItems: 'center',
-  },
-  earningIcon: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: COLORS.backgroundLight,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: SPACING.sm,
-  },
-  earningLabel: {
-    fontSize: FONT_SIZES.sm,
-    color: COLORS.textLight,
-    marginBottom: SPACING.xs,
-  },
-  earningValue: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: COLORS.secondary,
-  },
-  estimacionCard: {
-    backgroundColor: COLORS.secondary + '10',
-    borderRadius: RADIUS.lg,
-    padding: SPACING.md,
+    padding: SPACING.lg,
     marginBottom: SPACING.lg,
+    elevation: 3,
     borderWidth: 2,
     borderColor: COLORS.secondary + '30',
   },
-  estimacionHeader: {
+  comisionCardBloqueada: {
+    borderColor: COLORS.error,
+    backgroundColor: '#FFF5F5',
+  },
+  comisionHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: SPACING.sm,
     marginBottom: SPACING.md,
   },
-  estimacionInfo: {
-    flex: 1,
-  },
-  estimacionTitle: {
-    fontSize: FONT_SIZES.lg,
+  comisionTitle: {
+    fontSize: FONT_SIZES.xl,
     fontWeight: 'bold',
     color: COLORS.text,
   },
-  estimacionSubtitle: {
-    fontSize: FONT_SIZES.sm,
-    color: COLORS.textLight,
-  },
-  estimacionAmount: {
+  comisionInfo: {
     alignItems: 'center',
-    paddingTop: SPACING.md,
-    borderTopWidth: 1,
-    borderTopColor: COLORS.secondary + '30',
+    marginBottom: SPACING.md,
+    paddingVertical: SPACING.md,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.backgroundLight,
   },
-  estimacionLabel: {
-    fontSize: FONT_SIZES.sm,
+  comisionLabel: {
+    fontSize: FONT_SIZES.md,
     color: COLORS.textLight,
     marginBottom: SPACING.xs,
   },
-  estimacionValue: {
+  comisionAmount: {
+    fontSize: 36,
+    fontWeight: 'bold',
+    color: COLORS.primary,
+    marginBottom: SPACING.xs,
+  },
+  comisionAmountError: {
+    color: COLORS.error,
+  },
+  comisionLimite: {
+    fontSize: FONT_SIZES.sm,
+    color: COLORS.textLight,
+  },
+  barraContainer: {
+    marginBottom: SPACING.md,
+  },
+  barraLabels: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: SPACING.sm,
+  },
+  barraText: {
+    fontSize: FONT_SIZES.md,
+    fontWeight: '600',
+    color: COLORS.text,
+  },
+  estadoText: {
+    fontSize: FONT_SIZES.sm,
+    fontWeight: '600',
+  },
+  estadoTextSuccess: {
+    color: '#10B981',
+  },
+  estadoTextError: {
+    color: COLORS.error,
+  },
+  progressBar: {
+    height: 12,
+    backgroundColor: COLORS.backgroundLight,
+    borderRadius: RADIUS.md,
+    overflow: 'hidden',
+  },
+  progressFill: {
+    height: '100%',
+    backgroundColor: COLORS.secondary,
+    borderRadius: RADIUS.md,
+  },
+  progressFillError: {
+    backgroundColor: COLORS.error,
+  },
+  estadoCard: {
+    padding: SPACING.md,
+    borderRadius: RADIUS.md,
+    marginBottom: SPACING.md,
+  },
+  estadoCardSuccess: {
+    backgroundColor: '#10B98120',
+  },
+  estadoCardError: {
+    backgroundColor: COLORS.error + '20',
+  },
+  estadoMessage: {
+    fontSize: FONT_SIZES.md,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  estadoMessageSuccess: {
+    color: '#10B981',
+  },
+  estadoMessageError: {
+    color: COLORS.error,
+  },
+  pagarButton: {
+    backgroundColor: COLORS.primary,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: SPACING.sm,
+    padding: SPACING.md,
+    borderRadius: RADIUS.md,
+  },
+  pagarButtonText: {
+    color: COLORS.white,
+    fontSize: FONT_SIZES.lg,
+    fontWeight: 'bold',
+  },
+
+  // Estilos para Ganancias de hoy
+  gananciasCard: {
+    backgroundColor: COLORS.secondary + '15',
+    borderRadius: RADIUS.lg,
+    padding: SPACING.lg,
+    marginBottom: SPACING.lg,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SPACING.md,
+    borderWidth: 1,
+    borderColor: COLORS.secondary + '30',
+  },
+  gananciasIcon: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: COLORS.white,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  gananciasInfo: {
+    flex: 1,
+  },
+  gananciasLabel: {
+    fontSize: FONT_SIZES.md,
+    color: COLORS.textLight,
+    marginBottom: SPACING.xs,
+  },
+  gananciasValue: {
     fontSize: 32,
     fontWeight: 'bold',
     color: COLORS.secondary,
   },
+
+  // Estilos para Bonos
+  bonosCard: {
+    backgroundColor: COLORS.white,
+    borderRadius: RADIUS.lg,
+    padding: SPACING.lg,
+    marginBottom: SPACING.lg,
+    elevation: 2,
+  },
+  bonosHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SPACING.sm,
+    marginBottom: SPACING.md,
+    paddingBottom: SPACING.md,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.backgroundLight,
+  },
+  bonosTitle: {
+    fontSize: FONT_SIZES.lg,
+    fontWeight: 'bold',
+    color: COLORS.text,
+  },
+  bonoItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SPACING.sm,
+    marginBottom: SPACING.md,
+    backgroundColor: COLORS.backgroundLight,
+    padding: SPACING.md,
+    borderRadius: RADIUS.md,
+  },
+  bonoIconWrapper: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#FFB80020',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  bonoText: {
+    flex: 1,
+    fontSize: FONT_SIZES.md,
+    color: COLORS.text,
+    fontWeight: '600',
+  },
+  bonoProgress: {
+    gap: SPACING.xs,
+  },
+  bonoProgressBar: {
+    height: 8,
+    backgroundColor: COLORS.backgroundLight,
+    borderRadius: RADIUS.sm,
+    overflow: 'hidden',
+  },
+  bonoProgressFill: {
+    height: '100%',
+    backgroundColor: COLORS.secondary,
+    borderRadius: RADIUS.sm,
+  },
+  bonoProgressText: {
+    fontSize: FONT_SIZES.sm,
+    color: COLORS.textLight,
+    textAlign: 'right',
+  },
+
+  // Estilos para Historial de comisiones
   section: {
     marginBottom: SPACING.xl,
   },
@@ -270,140 +518,126 @@ const styles = StyleSheet.create({
     color: COLORS.text,
     marginBottom: SPACING.md,
   },
-  achievementsContainer: {
-    gap: SPACING.md,
-  },
-  achievementCard: {
+  comisionHistorialCard: {
     backgroundColor: COLORS.white,
     borderRadius: RADIUS.lg,
     padding: SPACING.md,
-    alignItems: 'center',
+    marginBottom: SPACING.md,
     elevation: 2,
+    borderLeftWidth: 4,
+    borderLeftColor: COLORS.primary,
   },
-  achievementLocked: {
-    opacity: 0.6,
-  },
-  achievementIcon: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: '#FFB80020',
-    justifyContent: 'center',
+  comisionHistorialHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: SPACING.sm,
+    marginBottom: SPACING.md,
   },
-  achievementTitle: {
-    fontSize: FONT_SIZES.md,
+  comisionHistorialTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SPACING.xs,
+  },
+  comisionHistorialId: {
+    fontSize: FONT_SIZES.lg,
     fontWeight: 'bold',
     color: COLORS.text,
-    marginBottom: SPACING.xs,
   },
-  achievementDesc: {
-    fontSize: FONT_SIZES.sm,
-    color: COLORS.textLight,
-    textAlign: 'center',
+  comisionHistorialComision: {
+    fontSize: FONT_SIZES.xl,
+    fontWeight: 'bold',
+    color: COLORS.error,
   },
-  lockedBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    marginTop: SPACING.xs,
-    backgroundColor: COLORS.backgroundDark,
-    paddingVertical: 4,
-    paddingHorizontal: SPACING.sm,
-    borderRadius: RADIUS.sm,
-  },
-  lockedText: {
-    fontSize: FONT_SIZES.xs,
-    color: COLORS.textLight,
-  },
-  bonusCard: {
-    backgroundColor: COLORS.secondary,
-    borderRadius: RADIUS.lg,
+  comisionHistorialDetails: {
+    backgroundColor: COLORS.backgroundLight,
     padding: SPACING.md,
-    marginBottom: SPACING.lg,
-  },
-  bonusHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    borderRadius: RADIUS.md,
     gap: SPACING.sm,
     marginBottom: SPACING.sm,
   },
-  bonusTitle: {
-    fontSize: FONT_SIZES.lg,
-    fontWeight: 'bold',
-    color: COLORS.white,
-  },
-  bonusDesc: {
-    fontSize: FONT_SIZES.sm,
-    color: COLORS.white,
-    opacity: 0.9,
-    marginBottom: SPACING.md,
-  },
-  bonusProgress: {
-    gap: SPACING.xs,
-  },
-  progressBar: {
-    height: 8,
-    backgroundColor: 'rgba(255,255,255,0.3)',
-    borderRadius: RADIUS.sm,
-    overflow: 'hidden',
-  },
-  progressFill: {
-    height: '100%',
-    backgroundColor: COLORS.white,
-    borderRadius: RADIUS.sm,
-  },
-  progressText: {
-    fontSize: FONT_SIZES.xs,
-    color: COLORS.white,
-    fontWeight: '600',
-  },
-  historialCard: {
-    backgroundColor: COLORS.white,
-    borderRadius: RADIUS.lg,
-    padding: SPACING.md,
-    marginBottom: SPACING.md,
-    elevation: 2,
-  },
-  historialHeader: {
+  comisionHistorialRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: SPACING.sm,
   },
-  historialFecha: {
-    fontSize: FONT_SIZES.sm,
-    color: COLORS.textLight,
-  },
-  historialGanancia: {
-    fontSize: FONT_SIZES.lg,
-    fontWeight: 'bold',
-    color: COLORS.secondary,
-  },
-  historialRuta: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: SPACING.xs,
-    marginBottom: SPACING.sm,
-  },
-  historialRutaText: {
+  comisionHistorialLabel: {
     fontSize: FONT_SIZES.md,
-    color: COLORS.text,
-    fontWeight: '600',
+    color: COLORS.textLight,
   },
-  historialFooter: {
+  comisionHistorialValue: {
+    fontSize: FONT_SIZES.md,
+    fontWeight: '600',
+    color: COLORS.text,
+  },
+  comisionHistorialValueHighlight: {
+    fontSize: FONT_SIZES.md,
+    fontWeight: 'bold',
+    color: COLORS.error,
+  },
+  comisionHistorialFecha: {
+    fontSize: FONT_SIZES.sm,
+    color: COLORS.textLight,
+  },
+
+  // Estilos para Modal de pago
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: COLORS.white,
+    borderTopLeftRadius: RADIUS.xl,
+    borderTopRightRadius: RADIUS.xl,
+    padding: SPACING.xl,
+    minHeight: 400,
+  },
+  modalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: SPACING.xl,
+    paddingBottom: SPACING.md,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.backgroundLight,
   },
-  pasajerosInfo: {
+  modalTitle: {
+    fontSize: FONT_SIZES.xxl,
+    fontWeight: 'bold',
+    color: COLORS.text,
+  },
+  modalCloseButton: {
+    padding: SPACING.xs,
+  },
+  modalOptions: {
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: SPACING.xs,
+    flexWrap: 'wrap',
+    gap: SPACING.md,
+    marginBottom: SPACING.xl,
   },
-  historialPasajeros: {
-    fontSize: FONT_SIZES.sm,
-    color: COLORS.textLight,
+  modalOption: {
+    flex: 1,
+    minWidth: '45%',
+    backgroundColor: COLORS.backgroundLight,
+    padding: SPACING.lg,
+    borderRadius: RADIUS.lg,
+    alignItems: 'center',
+    gap: SPACING.sm,
+  },
+  modalOptionText: {
+    fontSize: FONT_SIZES.md,
+    fontWeight: '600',
+    color: COLORS.text,
+  },
+  modalFooter: {
+    backgroundColor: COLORS.backgroundLight,
+    padding: SPACING.md,
+    borderRadius: RADIUS.md,
+    alignItems: 'center',
+  },
+  modalFooterText: {
+    fontSize: FONT_SIZES.lg,
+    fontWeight: 'bold',
+    color: COLORS.primary,
   },
 });

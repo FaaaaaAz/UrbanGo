@@ -21,18 +21,18 @@ export default function ConductorTabsLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Ruta',
+          title: 'Inicio',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="map" size={size} color={color} />
+            <Ionicons name="home" size={size} color={color} />
           ),
         }}
       />
       <Tabs.Screen
         name="earnings"
         options={{
-          title: 'Ingresos',
+          title: 'Billetera',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="cash" size={size} color={color} />
+            <Ionicons name="wallet" size={size} color={color} />
           ),
         }}
       />

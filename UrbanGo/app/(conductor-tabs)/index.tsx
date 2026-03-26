@@ -1,59 +1,80 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal, Pressable, TextInput } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { COLORS, SPACING, FONT_SIZES, RADIUS } from '../../config/constants';
 import { Ionicons } from '@expo/vector-icons';
 
-// Mock data para solicitudes
-const solicitudesEntrantes = [
+// Mock data para evaluaciones
+const evaluaciones = [
   {
     id: 1,
-    pasajero: {
-      nombre: 'María López',
-      foto: null,
-      calificacion: 4.9,
-    },
-    puntoRecogida: 'Av. Arce esquina',
-    desvio: 3,
-    precio: 5,
+    estrellas: 5,
+    comentario: 'Fue muy amable y puntual',
+    fecha: '2026-03-10',
   },
   {
     id: 2,
-    pasajero: {
-      nombre: 'Juan Pérez',
-      foto: null,
-      calificacion: 4.7,
-    },
-    puntoRecogida: 'Plaza Abaroa',
-    desvio: 5,
-    precio: 5,
+    estrellas: 4,
+    comentario: 'Buen servicio',
+    fecha: '2026-03-09',
+  },
+  {
+    id: 3,
+    estrellas: 5,
+    comentario: 'Excelente conductor, muy profesional',
+    fecha: '2026-03-08',
+  },
+  {
+    id: 4,
+    estrellas: 4,
+    comentario: null,
+    fecha: '2026-03-07',
   },
 ];
 
-export default function ConductorRuta() {
+// Función para determinar el rango según puntaje
+const obtenerRango = (puntaje: number) => {
+  if (puntaje >= 90) return { nombre: 'Elite', color: '#FFD700', icono: 'trophy' };
+  if (puntaje >= 70) return { nombre: 'Oro', color: '#FFA500', icono: 'medal' };
+  if (puntaje >= 50) return { nombre: 'Plata', color: '#C0C0C0', icono: 'ribbon' };
+  return { nombre: 'Riesgo', color: '#DC2626', icono: 'warning' };
+};
+
+export default function ConductorInicio() {
   const router = useRouter();
   const [menuVisible, setMenuVisible] = useState(false);
-  const [modalPublicar, setModalPublicar] = useState(false);
   const [rutaPublicada, setRutaPublicada] = useState(false);
   
-  // Form states
-  const [puntoInicio, setPuntoInicio] = useState('');
-  const [direccionGeneral, setDireccionGeneral] = useState('');
-  const [horario, setHorario] = useState('');
-  const [cupos, setCupos] = useState(2);
+  // Datos del conductor
+  const puntajeConductor = 85;
+  const promedioCalificacion = 4.8;
+  const cancelacionesSemana = 3;
+  const rango = obtenerRango(puntajeConductor);
 
-  const incrementarCupos = () => {
-    if (cupos < 15) setCupos(cupos + 1);
-  };
+  // Solicitudes entrantes
+  const solicitudesEntrantes = [
+    {
+      id: 1,
+      pasajero: 'María López',
+      puntoRecogida: 'Av. Arce esquina',
+      calificacion: 4.9,
+    },
+  ];
 
-  const decrementarCupos = () => {
-    if (cupos > 1) setCupos(cupos - 1);
-  };
-
-  const handlePublicarRuta = () => {
-    setRutaPublicada(true);
-    setModalPublicar(false);
+  const renderEstrellas = (cantidad: number) => {
+    const estrellas = [];
+    for (let i = 0; i < 5; i++) {
+      estrellas.push(
+        <Ionicons
+          key={i}
+          name={i < cantidad ? 'star' : 'star-outline'}
+          size={18}
+          color="#FFB800"
+        />
+      );
+    }
+    return estrellas;
   };
 
   return (
@@ -65,8 +86,8 @@ export default function ConductorRuta() {
             <Ionicons name="menu" size={28} color={COLORS.white} />
           </TouchableOpacity>
           <View style={styles.headerCenter}>
-            <Text style={styles.greeting}>¡Hola, Carlos!</Text>
-            <Text style={styles.subtitle}>Gestiona tu ruta diaria</Text>
+            <Text style={styles.greeting}>Inicio</Text>
+            <Text style={styles.subtitle}>Panel del Conductor</Text>
           </View>
           <TouchableOpacity style={styles.notificationButton}>
             <Ionicons name="notifications-outline" size={24} color={COLORS.white} />
@@ -78,7 +99,7 @@ export default function ConductorRuta() {
           {!rutaPublicada ? (
             <TouchableOpacity 
               style={styles.publishButton}
-              onPress={() => setModalPublicar(true)}
+              onPress={() => setRutaPublicada(true)}
             >
               <Ionicons name="add-circle" size={24} color={COLORS.white} />
               <Text style={styles.publishButtonText}>Publicar Ruta de Hoy</Text>
@@ -86,199 +107,158 @@ export default function ConductorRuta() {
           ) : (
             <View style={styles.rutaActiva}>
               <View style={styles.rutaActivaHeader}>
-                <View>
-                  <Text style={styles.rutaActivaTitle}>Ruta Activa</Text>
-                  <Text style={styles.rutaActivaSubtitle}>Sopocachi → Obrajes</Text>
-                </View>
-                <View style={styles.statusBadge}>
-                  <Text style={styles.statusBadgeText}>En curso</Text>
-                </View>
+                <Ionicons name="checkmark-circle" size={24} color={COLORS.secondary} />
+                <Text style={styles.rutaActivaText}>Ruta publicada hoy</Text>
               </View>
-
-              <View style={styles.rutaDetails}>
-                <View style={styles.rutaDetailItem}>
-                  <Ionicons name="location" size={18} color={COLORS.primary} />
-                  <Text style={styles.rutaDetailText}>Inicio: Plaza Abaroa</Text>
-                </View>
-                <View style={styles.rutaDetailItem}>
-                  <Ionicons name="time" size={18} color={COLORS.primary} />
-                  <Text style={styles.rutaDetailText}>Horario: 18:00</Text>
-                </View>
-                <View style={styles.rutaDetailItem}>
-                  <Ionicons name="people" size={18} color={COLORS.primary} />
-                  <Text style={styles.rutaDetailText}>Cupos: 2 disponibles</Text>
-                </View>
-              </View>
-
-              <TouchableOpacity style={styles.editRutaButton}>
-                <Ionicons name="create-outline" size={18} color={COLORS.primary} />
-                <Text style={styles.editRutaText}>Editar Ruta</Text>
-              </TouchableOpacity>
             </View>
           )}
 
-          {/* Mapa de la Ruta */}
-          <View style={styles.mapSection}>
-            <Text style={styles.sectionTitle}>Mapa de tu Ruta</Text>
-            <TouchableOpacity style={styles.mapPreview}>
-              <View style={styles.mapOverlay}>
-                <Ionicons name="map" size={48} color={COLORS.primary} />
-                <Text style={styles.mapText}>Vista de tu ruta</Text>
-                <Text style={styles.mapSubtext}>Toca para ver en detalle</Text>
+          {/* Solicitud Entrante */}
+          {solicitudesEntrantes.length > 0 && (
+            <View style={styles.solicitudEntrante}>
+              <View style={styles.solicitudHeader}>
+                <View style={styles.solicitudIconContainer}>
+                  <Ionicons name="notifications" size={24} color={COLORS.primary} />
+                </View>
+                <Text style={styles.solicitudTitle}>Solicitud entrante</Text>
               </View>
-            </TouchableOpacity>
-          </View>
 
-          {/* Solicitudes Entrantes */}
-          <View style={styles.section}>
-            <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Solicitudes Entrantes</Text>
-              <View style={styles.badge}>
-                <Text style={styles.badgeText}>{solicitudesEntrantes.length}</Text>
-              </View>
-            </View>
-
-            {solicitudesEntrantes.map((solicitud) => (
-              <View key={solicitud.id} style={styles.solicitudCard}>
-                <View style={styles.solicitudHeader}>
+              <View style={styles.solicitudBody}>
+                <View style={styles.pasajeroRow}>
                   <View style={styles.pasajeroAvatar}>
-                    <Ionicons name="person" size={24} color={COLORS.primary} />
+                    <Ionicons name="person" size={20} color={COLORS.primary} />
                   </View>
-                  <View style={styles.pasajeroInfo}>
-                    <Text style={styles.pasajeroNombre}>{solicitud.pasajero.nombre}</Text>
-                    <View style={styles.ratingContainer}>
-                      <Ionicons name="star" size={14} color="#FFB800" />
-                      <Text style={styles.ratingText}>{solicitud.pasajero.calificacion}</Text>
+                  <View style={styles.pasajeroData}>
+                    <Text style={styles.pasajeroNombre}>{solicitudesEntrantes[0].pasajero}</Text>
+                    <View style={styles.ratingRow}>
+                      <Ionicons name="star" size={12} color="#FFB800" />
+                      <Text style={styles.ratingText}>{solicitudesEntrantes[0].calificacion}</Text>
                     </View>
                   </View>
                 </View>
 
-                <View style={styles.solicitudDetails}>
-                  <View style={styles.detailRow}>
-                    <Ionicons name="location" size={16} color={COLORS.textLight} />
-                    <Text style={styles.detailText}>{solicitud.puntoRecogida}</Text>
-                  </View>
-                  
-                  <View style={styles.detailRow}>
-                    <Ionicons name="cash" size={16} color={COLORS.secondary} />
-                    <Text style={styles.precioText}>{solicitud.precio} Bs</Text>
-                  </View>
+                <View style={styles.puntoRecogida}>
+                  <Ionicons name="location" size={16} color={COLORS.textLight} />
+                  <Text style={styles.puntoRecogidaText}>{solicitudesEntrantes[0].puntoRecogida}</Text>
                 </View>
 
                 <View style={styles.solicitudActions}>
-                  <TouchableOpacity style={styles.rejectButton}>
-                    <Ionicons name="close-circle" size={20} color={COLORS.danger} />
-                    <Text style={styles.rejectButtonText}>Rechazar</Text>
+                  <TouchableOpacity style={styles.rechazarButton}>
+                    <Ionicons name="close" size={18} color={COLORS.error} />
+                    <Text style={styles.rechazarButtonText}>Rechazar</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.acceptButton}>
-                    <Ionicons name="checkmark-circle" size={20} color={COLORS.white} />
-                    <Text style={styles.acceptButtonText}>Aceptar</Text>
+                  <TouchableOpacity style={styles.aceptarButton}>
+                    <Ionicons name="checkmark" size={18} color={COLORS.white} />
+                    <Text style={styles.aceptarButtonText}>Aceptar</Text>
                   </TouchableOpacity>
                 </View>
+              </View>
+            </View>
+          )}
+
+          {/* Puntaje y Rango en una fila */}
+          <View style={styles.puntajeRangoRow}>
+            {/* Puntaje del Conductor */}
+            <View style={styles.puntajeCard}>
+              <View style={styles.cardHeaderSmall}>
+                <Ionicons name="analytics" size={20} color={COLORS.primary} />
+                <Text style={styles.cardTitleSmall}>Puntaje del conductor</Text>
+              </View>
+              
+              <View style={styles.puntajeDisplaySmall}>
+                <Text style={styles.puntajeNumeroSmall}>{puntajeConductor}</Text>
+                <Text style={styles.puntajeTotalSmall}>/100</Text>
+              </View>
+
+              <View style={styles.progressBarContainer}>
+                <View style={styles.progressBar}>
+                  <View style={[styles.progressFill, { width: `${puntajeConductor}%` }]} />
+                </View>
+                <Text style={styles.progressText}>{puntajeConductor}%</Text>
+              </View>
+            </View>
+
+            {/* Rango del Conductor */}
+            <View style={styles.rangoCard}>
+              <View style={styles.cardHeaderSmall}>
+                <Ionicons name="shield-checkmark" size={20} color={rango.color} />
+                <Text style={styles.cardTitleSmall}>Rango actual</Text>
+              </View>
+
+              <View style={styles.rangoDisplaySmall}>
+                <View style={[styles.rangoIconContainerSmall, { backgroundColor: rango.color + '20' }]}>
+                  <Ionicons name={rango.icono as any} size={32} color={rango.color} />
+                </View>
+                <Text style={[styles.rangoNombreSmall, { color: rango.color }]}>{rango.nombre}</Text>
+              </View>
+            </View>
+          </View>
+
+          {/* Promedio de Calificaciones */}
+          <View style={styles.calificacionCard}>
+            <View style={styles.cardHeader}>
+              <View style={styles.cardHeaderIcon}>
+                <Ionicons name="star" size={24} color="#FFB800" />
+              </View>
+              <Text style={styles.cardTitle}>Calificación promedio</Text>
+            </View>
+
+            <View style={styles.calificacionDisplay}>
+              <View style={styles.estrellasGrandes}>
+                {renderEstrellas(Math.round(promedioCalificacion))}
+              </View>
+              <Text style={styles.calificacionNumero}>
+                {promedioCalificacion.toFixed(1)} / 5
+              </Text>
+            </View>
+          </View>
+
+          {/* Advertencias o Sanciones */}
+          {cancelacionesSemana >= 3 && (
+            <View style={styles.advertenciaCard}>
+              <View style={styles.advertenciaHeader}>
+                <View style={styles.advertenciaIconContainer}>
+                  <Ionicons name="alert-circle" size={32} color={COLORS.error} />
+                </View>
+                <Text style={styles.advertenciaTitle}>Advertencia</Text>
+              </View>
+              
+              <Text style={styles.advertenciaText}>
+                Has cancelado {cancelacionesSemana} viajes esta semana.
+              </Text>
+              <Text style={styles.advertenciaSubtext}>
+                Evita cancelaciones para mantener tu prioridad y puntaje.
+              </Text>
+            </View>
+          )}
+
+          {/* Historial de Evaluaciones */}
+          <View style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <Ionicons name="chatbox-ellipses" size={24} color={COLORS.primary} />
+              <Text style={styles.sectionTitle}>Historial de evaluaciones</Text>
+            </View>
+
+            {evaluaciones.map((evaluacion) => (
+              <View key={evaluacion.id} style={styles.evaluacionCard}>
+                <View style={styles.evaluacionHeader}>
+                  <View style={styles.estrellas}>
+                    {renderEstrellas(evaluacion.estrellas)}
+                  </View>
+                  <Text style={styles.evaluacionFecha}>{evaluacion.fecha}</Text>
+                </View>
+
+                {evaluacion.comentario && (
+                  <View style={styles.comentarioContainer}>
+                    <Ionicons name="chatbubble-outline" size={16} color={COLORS.textLight} />
+                    <Text style={styles.comentarioText}>"{evaluacion.comentario}"</Text>
+                  </View>
+                )}
               </View>
             ))}
           </View>
         </View>
       </ScrollView>
-
-      {/* Modal Publicar Ruta */}
-      <Modal
-        visible={modalPublicar}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={() => setModalPublicar(false)}
-      >
-        <Pressable style={styles.modalOverlay} onPress={() => setModalPublicar(false)}>
-          <Pressable style={styles.modalContent} onPress={(e) => e.stopPropagation()}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Publicar Ruta</Text>
-              <TouchableOpacity onPress={() => setModalPublicar(false)}>
-                <Ionicons name="close" size={28} color={COLORS.text} />
-              </TouchableOpacity>
-            </View>
-
-            <ScrollView 
-              style={styles.modalBody}
-              contentContainerStyle={styles.modalBodyContent}
-              showsVerticalScrollIndicator={true}
-              bounces={false}
-              keyboardShouldPersistTaps="handled"
-            >
-              <View style={styles.formGroup}>
-                <Text style={styles.label}>Punto de Inicio</Text>
-                <View style={styles.inputContainer}>
-                  <Ionicons name="location" size={20} color={COLORS.textLight} />
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Ej: Plaza Abaroa"
-                    value={puntoInicio}
-                    onChangeText={setPuntoInicio}
-                  />
-                </View>
-              </View>
-
-              <View style={styles.formGroup}>
-                <Text style={styles.label}>Dirección General</Text>
-                <View style={styles.inputContainer}>
-                  <Ionicons name="navigate" size={20} color={COLORS.textLight} />
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Ej: Sopocachi → Obrajes"
-                    value={direccionGeneral}
-                    onChangeText={setDireccionGeneral}
-                  />
-                </View>
-              </View>
-
-              <View style={styles.formGroup}>
-                <Text style={styles.label}>Horario</Text>
-                <View style={styles.inputContainer}>
-                  <Ionicons name="time" size={20} color={COLORS.textLight} />
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Ej: 18:00"
-                    value={horario}
-                    onChangeText={setHorario}
-                  />
-                </View>
-              </View>
-
-              <View style={styles.formGroup}>
-                <Text style={styles.label}>Cupos Disponibles</Text>
-                <View style={styles.cuposCounter}>
-                  <TouchableOpacity 
-                    style={styles.counterButton}
-                    onPress={decrementarCupos}
-                    disabled={cupos <= 1}
-                  >
-                    <Ionicons name="remove" size={24} color={cupos <= 1 ? COLORS.textLight : COLORS.primary} />
-                  </TouchableOpacity>
-                  
-                  <View style={styles.counterDisplay}>
-                    <Text style={styles.counterNumber}>{cupos}</Text>
-                    <Text style={styles.counterLabel}>asiento{cupos !== 1 ? 's' : ''}</Text>
-                  </View>
-                  
-                  <TouchableOpacity 
-                    style={styles.counterButton}
-                    onPress={incrementarCupos}
-                    disabled={cupos >= 15}
-                  >
-                    <Ionicons name="add" size={24} color={cupos >= 15 ? COLORS.textLight : COLORS.primary} />
-                  </TouchableOpacity>
-                </View>
-              </View>
-
-              <TouchableOpacity 
-                style={styles.submitButton}
-                onPress={handlePublicarRuta}
-              >
-                <Text style={styles.submitButtonText}>Publicar Ruta</Text>
-              </TouchableOpacity>
-            </ScrollView>
-          </Pressable>
-        </Pressable>
-      </Modal>
 
       {/* Menú Hamburguesa */}
       <Modal
@@ -398,211 +378,129 @@ const styles = StyleSheet.create({
   content: {
     padding: SPACING.lg,
   },
+
+  // Estilos para Publicar Ruta
   publishButton: {
     backgroundColor: COLORS.secondary,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: SPACING.lg,
+    padding: SPACING.md,
     borderRadius: RADIUS.lg,
     gap: SPACING.sm,
     marginBottom: SPACING.lg,
-    elevation: 4,
+    elevation: 3,
   },
   publishButtonText: {
     color: COLORS.white,
-    fontSize: FONT_SIZES.lg,
+    fontSize: FONT_SIZES.md,
     fontWeight: 'bold',
   },
   rutaActiva: {
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.secondary + '15',
     borderRadius: RADIUS.lg,
     padding: SPACING.md,
     marginBottom: SPACING.lg,
-    elevation: 2,
+    borderWidth: 1,
+    borderColor: COLORS.secondary + '40',
   },
   rutaActivaHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: SPACING.md,
-  },
-  rutaActivaTitle: {
-    fontSize: FONT_SIZES.lg,
-    fontWeight: 'bold',
-    color: COLORS.text,
-  },
-  rutaActivaSubtitle: {
-    fontSize: FONT_SIZES.md,
-    color: COLORS.secondary,
-    fontWeight: '600',
-  },
-  statusBadge: {
-    backgroundColor: COLORS.secondary + '20',
-    paddingVertical: 4,
-    paddingHorizontal: SPACING.sm,
-    borderRadius: RADIUS.sm,
-  },
-  statusBadgeText: {
-    color: COLORS.secondary,
-    fontSize: FONT_SIZES.xs,
-    fontWeight: '600',
-  },
-  rutaDetails: {
-    gap: SPACING.sm,
-    marginBottom: SPACING.md,
-  },
-  rutaDetailItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: SPACING.xs,
-  },
-  rutaDetailText: {
-    fontSize: FONT_SIZES.sm,
-    color: COLORS.text,
-  },
-  editRutaButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: SPACING.xs,
-    paddingVertical: SPACING.sm,
-    borderTopWidth: 1,
-    borderTopColor: COLORS.backgroundDark,
-    paddingTop: SPACING.md,
-  },
-  editRutaText: {
-    color: COLORS.primary,
-    fontSize: FONT_SIZES.md,
-    fontWeight: '600',
-  },
-  mapSection: {
-    marginBottom: SPACING.lg,
-  },
-  sectionTitle: {
-    fontSize: FONT_SIZES.xl,
-    fontWeight: 'bold',
-    color: COLORS.text,
-    marginBottom: SPACING.md,
-  },
-  mapPreview: {
-    height: 150,
-    backgroundColor: COLORS.backgroundLight,
-    borderRadius: RADIUS.lg,
-    overflow: 'hidden',
-    borderWidth: 2,
-    borderColor: COLORS.primary + '30',
-  },
-  mapOverlay: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: COLORS.primary + '10',
-  },
-  mapText: {
-    fontSize: FONT_SIZES.lg,
-    fontWeight: '600',
-    color: COLORS.primary,
-    marginTop: SPACING.sm,
-  },
-  mapSubtext: {
-    fontSize: FONT_SIZES.sm,
-    color: COLORS.textLight,
-    marginTop: SPACING.xs,
-  },
-  section: {
-    marginBottom: SPACING.lg,
-  },
-  sectionHeader: {
-    flexDirection: 'row',
     alignItems: 'center',
     gap: SPACING.sm,
-    marginBottom: SPACING.md,
-  },
-  badge: {
-    backgroundColor: COLORS.danger,
-    width: 24,
-    height: 24,
-    borderRadius: 12,
     justifyContent: 'center',
-    alignItems: 'center',
   },
-  badgeText: {
-    color: COLORS.white,
-    fontSize: FONT_SIZES.xs,
-    fontWeight: 'bold',
+  rutaActivaText: {
+    fontSize: FONT_SIZES.md,
+    fontWeight: '600',
+    color: COLORS.secondary,
   },
-  solicitudCard: {
+
+  // Estilos para Solicitud Entrante
+  solicitudEntrante: {
     backgroundColor: COLORS.white,
     borderRadius: RADIUS.lg,
     padding: SPACING.md,
-    marginBottom: SPACING.md,
-    elevation: 2,
+    marginBottom: SPACING.lg,
+    elevation: 3,
+    borderLeftWidth: 4,
+    borderLeftColor: COLORS.primary,
   },
   solicitudHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: SPACING.sm,
+    gap: SPACING.sm,
+    marginBottom: SPACING.md,
+    paddingBottom: SPACING.sm,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.backgroundLight,
   },
-  pasajeroAvatar: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+  solicitudIconContainer: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     backgroundColor: COLORS.primary + '20',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: SPACING.sm,
   },
-  pasajeroInfo: {
+  solicitudTitle: {
+    fontSize: FONT_SIZES.md,
+    fontWeight: 'bold',
+    color: COLORS.text,
+  },
+  solicitudBody: {
+    gap: SPACING.sm,
+  },
+  pasajeroRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SPACING.sm,
+  },
+  pasajeroAvatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: COLORS.primary + '20',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  pasajeroData: {
     flex: 1,
   },
   pasajeroNombre: {
     fontSize: FONT_SIZES.md,
     fontWeight: '600',
     color: COLORS.text,
-    marginBottom: 4,
+    marginBottom: 2,
   },
-  ratingContainer: {
+  ratingRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
   },
   ratingText: {
-    fontSize: FONT_SIZES.sm,
+    fontSize: FONT_SIZES.xs,
     color: COLORS.text,
     fontWeight: '600',
   },
-  solicitudDetails: {
-    gap: SPACING.xs,
-    marginBottom: SPACING.md,
-  },
-  detailRow: {
+  puntoRecogida: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: SPACING.xs,
+    backgroundColor: COLORS.backgroundLight,
+    padding: SPACING.sm,
+    borderRadius: RADIUS.md,
   },
-  detailText: {
+  puntoRecogidaText: {
     fontSize: FONT_SIZES.sm,
     color: COLORS.text,
-  },
-  desvioText: {
-    fontSize: FONT_SIZES.sm,
-    color: COLORS.warning,
-    fontWeight: '600',
-  },
-  precioText: {
-    fontSize: FONT_SIZES.sm,
-    color: COLORS.secondary,
-    fontWeight: '600',
   },
   solicitudActions: {
     flexDirection: 'row',
     gap: SPACING.sm,
-    paddingTop: SPACING.sm,
-    borderTopWidth: 1,
-    borderTopColor: COLORS.backgroundDark,
+    marginTop: SPACING.sm,
   },
-  rejectButton: {
+  rechazarButton: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
@@ -610,127 +508,257 @@ const styles = StyleSheet.create({
     padding: SPACING.sm,
     borderRadius: RADIUS.md,
     borderWidth: 1,
-    borderColor: COLORS.danger,
+    borderColor: COLORS.error,
     gap: SPACING.xs,
   },
-  rejectButtonText: {
-    color: COLORS.danger,
+  rechazarButtonText: {
+    color: COLORS.error,
     fontSize: FONT_SIZES.sm,
     fontWeight: '600',
   },
-  acceptButton: {
+  aceptarButton: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     padding: SPACING.sm,
     borderRadius: RADIUS.md,
-    backgroundColor: COLORS.secondary,
+    backgroundColor: COLORS.primary,
     gap: SPACING.xs,
   },
-  acceptButtonText: {
+  aceptarButtonText: {
     color: COLORS.white,
     fontSize: FONT_SIZES.sm,
     fontWeight: '600',
   },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'flex-end',
-  },
-  modalContent: {
-    backgroundColor: COLORS.white,
-    borderTopLeftRadius: RADIUS.xl,
-    borderTopRightRadius: RADIUS.xl,
-    maxHeight: '80%',
-    height: '80%',
-  },
-  modalHeader: {
+
+  // Estilos para Puntaje y Rango en fila
+  puntajeRangoRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: SPACING.lg,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.backgroundDark,
-  },
-  modalTitle: {
-    fontSize: FONT_SIZES.xl,
-    fontWeight: 'bold',
-    color: COLORS.text,
-  },
-  modalBody: {
-    flex: 1,
-  },
-  modalBodyContent: {
-    padding: SPACING.lg,
-    paddingBottom: SPACING.lg,
-  },
-  formGroup: {
+    gap: SPACING.md,
     marginBottom: SPACING.lg,
   },
-  label: {
-    fontSize: FONT_SIZES.md,
-    fontWeight: '600',
-    color: COLORS.text,
-    marginBottom: SPACING.sm,
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: COLORS.backgroundLight,
-    borderRadius: RADIUS.md,
-    padding: SPACING.md,
-    gap: SPACING.sm,
-  },
-  input: {
+
+  // Estilos para Puntaje del Conductor (versión pequeña)
+  puntajeCard: {
     flex: 1,
-    fontSize: FONT_SIZES.md,
-    color: COLORS.text,
-  },
-  cuposCounter: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: COLORS.backgroundLight,
+    backgroundColor: COLORS.white,
     borderRadius: RADIUS.lg,
     padding: SPACING.md,
-    gap: SPACING.xl,
-  },
-  counterButton: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: COLORS.white,
-    justifyContent: 'center',
-    alignItems: 'center',
     elevation: 2,
   },
-  counterDisplay: {
+  cardHeaderSmall: {
+    flexDirection: 'row',
     alignItems: 'center',
-    minWidth: 80,
+    gap: SPACING.xs,
+    marginBottom: SPACING.sm,
   },
-  counterNumber: {
+  cardTitleSmall: {
+    fontSize: FONT_SIZES.xs,
+    fontWeight: '600',
+    color: COLORS.textLight,
+    flex: 1,
+  },
+  puntajeDisplaySmall: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    justifyContent: 'center',
+    marginBottom: SPACING.sm,
+  },
+  puntajeNumeroSmall: {
     fontSize: 36,
     fontWeight: 'bold',
     color: COLORS.primary,
   },
-  counterLabel: {
-    fontSize: FONT_SIZES.sm,
+  puntajeTotalSmall: {
+    fontSize: 18,
+    fontWeight: '600',
     color: COLORS.textLight,
-    marginTop: SPACING.xs,
   },
-  submitButton: {
-    backgroundColor: COLORS.secondary,
-    padding: SPACING.md,
+  progressBarContainer: {
+    gap: SPACING.xs,
+  },
+  progressBar: {
+    height: 8,
+    backgroundColor: COLORS.backgroundLight,
     borderRadius: RADIUS.md,
-    alignItems: 'center',
-    marginTop: SPACING.md,
+    overflow: 'hidden',
   },
-  submitButtonText: {
-    color: COLORS.white,
+  progressFill: {
+    height: '100%',
+    backgroundColor: COLORS.primary,
+    borderRadius: RADIUS.md,
+  },
+  progressText: {
+    fontSize: FONT_SIZES.xs,
+    color: COLORS.textLight,
+    textAlign: 'right',
+    fontWeight: '600',
+  },
+
+  // Estilos para Rango del Conductor (versión pequeña)
+  rangoCard: {
+    flex: 1,
+    backgroundColor: COLORS.white,
+    borderRadius: RADIUS.lg,
+    padding: SPACING.md,
+    elevation: 2,
+  },
+  rangoDisplaySmall: {
+    alignItems: 'center',
+    paddingVertical: SPACING.sm,
+  },
+  rangoIconContainerSmall: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: SPACING.xs,
+  },
+  rangoNombreSmall: {
     fontSize: FONT_SIZES.lg,
     fontWeight: 'bold',
   },
+
+  // Estilos para Calificación
+  calificacionCard: {
+    backgroundColor: COLORS.white,
+    borderRadius: RADIUS.lg,
+    padding: SPACING.lg,
+    marginBottom: SPACING.lg,
+    elevation: 2,
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SPACING.sm,
+    marginBottom: SPACING.md,
+    paddingBottom: SPACING.md,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.backgroundLight,
+  },
+  cardHeaderIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: COLORS.backgroundLight,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  cardTitle: {
+    fontSize: FONT_SIZES.lg,
+    fontWeight: 'bold',
+    color: COLORS.text,
+  },
+  calificacionDisplay: {
+    alignItems: 'center',
+    paddingVertical: SPACING.md,
+  },
+  estrellasGrandes: {
+    flexDirection: 'row',
+    gap: SPACING.xs,
+    marginBottom: SPACING.sm,
+  },
+  calificacionNumero: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: COLORS.text,
+  },
+
+  // Estilos para Advertencia
+  advertenciaCard: {
+    backgroundColor: '#FEF2F2',
+    borderRadius: RADIUS.lg,
+    padding: SPACING.lg,
+    marginBottom: SPACING.lg,
+    borderLeftWidth: 4,
+    borderLeftColor: COLORS.error,
+  },
+  advertenciaHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SPACING.sm,
+    marginBottom: SPACING.md,
+  },
+  advertenciaIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: COLORS.error + '20',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  advertenciaTitle: {
+    fontSize: FONT_SIZES.lg,
+    fontWeight: 'bold',
+    color: COLORS.error,
+  },
+  advertenciaText: {
+    fontSize: FONT_SIZES.md,
+    color: COLORS.text,
+    marginBottom: SPACING.sm,
+    fontWeight: '600',
+  },
+  advertenciaSubtext: {
+    fontSize: FONT_SIZES.sm,
+    color: COLORS.textLight,
+    lineHeight: 20,
+  },
+
+  // Estilos para Historial de Evaluaciones
+  section: {
+    marginBottom: SPACING.xl,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SPACING.sm,
+    marginBottom: SPACING.md,
+  },
+  sectionTitle: {
+    fontSize: FONT_SIZES.xl,
+    fontWeight: 'bold',
+    color: COLORS.text,
+  },
+  evaluacionCard: {
+    backgroundColor: COLORS.white,
+    borderRadius: RADIUS.lg,
+    padding: SPACING.md,
+    marginBottom: SPACING.md,
+    elevation: 2,
+  },
+  evaluacionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: SPACING.sm,
+  },
+  estrellas: {
+    flexDirection: 'row',
+    gap: 4,
+  },
+  evaluacionFecha: {
+    fontSize: FONT_SIZES.xs,
+    color: COLORS.textLight,
+  },
+  comentarioContainer: {
+    flexDirection: 'row',
+    gap: SPACING.sm,
+    backgroundColor: COLORS.backgroundLight,
+    padding: SPACING.md,
+    borderRadius: RADIUS.md,
+    marginTop: SPACING.sm,
+  },
+  comentarioText: {
+    flex: 1,
+    fontSize: FONT_SIZES.sm,
+    color: COLORS.text,
+    fontStyle: 'italic',
+    lineHeight: 20,
+  },
+
+  // Estilos para Menú
   menuOverlayStyle: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.5)',
@@ -749,6 +777,11 @@ const styles = StyleSheet.create({
     padding: SPACING.lg,
     borderBottomWidth: 1,
     borderBottomColor: COLORS.backgroundDark,
+  },
+  menuTitle: {
+    fontSize: FONT_SIZES.xl,
+    fontWeight: 'bold',
+    color: COLORS.text,
   },
   menuContent: {
     padding: SPACING.lg,

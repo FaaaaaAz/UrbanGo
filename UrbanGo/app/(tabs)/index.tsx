@@ -142,7 +142,7 @@ export default function Home() {
                   <Ionicons name="time-outline" size={20} color={COLORS.primary} />
                   <View>
                     <Text style={styles.infoLabel}>Tiempo estimado</Text>
-                    <Text style={styles.infoValue}>15-20 min</Text>
+                    <Text style={styles.infoValue}>3 min</Text>
                   </View>
                 </View>
                 <View style={styles.infoItem}>
